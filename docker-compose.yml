@@ -1,0 +1,34 @@
+
+services:
+  app:
+    build: .
+    container_name: devops-app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://devops:${DB_PASSWORD}@db:5432/tasks
+      APP_VERSION: "1.0"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: devops-db
+    environment:
+      POSTGRES_USER: devops
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: tasks
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devops -d tasks"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
