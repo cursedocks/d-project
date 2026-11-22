@@ -16,7 +16,7 @@ DATABASE_URL = os.getenv(
 @app.get("/")
 def home():
     return {
-        "message": "Welcome to DevOps CI/CD Project",
+        "message": "Hello from Production CI/CD!",
         "version": os.getenv("APP_VERSION", "local")
     }
 
